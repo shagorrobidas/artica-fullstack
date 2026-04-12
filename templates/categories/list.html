@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}Category: {{ current_category.name }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="bg-primary bg-opacity-10 rounded-4 p-5 mb-5 text-center shadow-sm border border-primary border-opacity-10">
+        <h1 class="display-4 fw-bold text-primary mb-3">{{ current_category.name }}</h1>
+        {% if current_category.description %}
+            <p class="lead text-muted mx-auto" style="max-width: 700px;">{{ current_category.description }}</p>
+        {% endif %}
+        
+        <!-- Render Subcategories visually as pills -->
+        {% if subcategories or subsubcategories %}
+        <div class="mt-4 d-flex flex-wrap justify-content-center gap-2">
+            {% for sub in subcategories %}
+                <a href="{% url 'categories:subcategory_list' slug=current_category.slug sub_slug=sub.slug %}" class="btn btn-outline-primary rounded-pill">{{ sub.name }}</a>
+            {% endfor %}
+            {% for sub in subsubcategories %}
+                <a href="{% url 'categories:subsubcategory_list' slug=current_category.category.slug sub_slug=current_category.slug subsub_slug=sub.slug %}" class="btn btn-outline-primary rounded-pill">{{ sub.name }}</a>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="row">
+        {% for article in articles %}
+            {% include 'partials/article_card.html' %}
+        {% empty %}
+            <div class="col-12 text-center py-5">
+                <i class='bx bx-folder-open fs-1 text-muted mb-3'></i>
+                <h4 class="text-muted">No articles in this category yet.</h4>
+            </div>
+        {% endfor %}
+    </div>
+
+    {% if is_paginated %}
+    <nav class="mt-5">
+      <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+        <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a></li>
+        {% endif %}
+        <li class="page-item active"><a class="page-link" href="#">{{ page_obj.number }}</a></li>
+        {% if page_obj.has_next %}
+        <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>
+        {% endif %}
+      </ul>
+    </nav>
+    {% endif %}
+</div>

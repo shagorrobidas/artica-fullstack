@@ -1,0 +1,123 @@
+/* main.css - Core Design System */
+
+:root {
+  --primary-color: #2563eb;       /* Royal Blue */
+  --primary-hover: #1d4ed8;
+  --secondary-color: #f1f5f9;     /* Light Gray/Slate */
+  --text-main: #1e293b;           /* Slate 800 */
+  --text-muted: #64748b;          /* Slate 500 */
+  --accent-color: #f59e0b;        /* Amber (for highlights) */
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  color: var(--text-main);
+  background-color: #f8fafc;
+}
+
+/* Typography Overrides */
+h1, h2, h3, h4, h5, h6 {
+  letter-spacing: -0.02em;
+}
+
+/* Article Cards */
+.article-card {
+  border-radius: 1rem;
+  overflow: hidden;
+}
+.transition-all {
+  transition: all 0.3s ease-in-out;
+}
+.article-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08) !important;
+}
+.article-card img {
+  transition: transform 0.5s ease;
+}
+.article-card:hover img {
+  transform: scale(1.05);
+}
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;  
+  overflow: hidden;
+}
+
+/* Badges & Buttons */
+.badge {
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+.btn-primary:hover {
+  background-color: var(--primary-hover);
+  border-color: var(--primary-hover);
+}
+
+.btn-outline-primary {
+  color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+.btn-outline-primary:hover {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+/* Rich Text Content */
+.rich-text-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+  margin: 1.5rem 0;
+}
+.rich-text-content a {
+  color: var(--primary-color);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.rich-text-content a:hover {
+  color: var(--primary-hover);
+}
+
+/* Interactive Term */
+.interactive-term {
+  border-bottom: 2px dashed rgb(from var(--accent-color) r g b / 0.5);
+  cursor: help;
+  position: relative;
+  transition: all 0.2s;
+  background-color: transparent;
+  padding: 0 2px;
+  border-radius: 3px;
+  font-weight: 500;
+}
+.interactive-term:hover {
+  background-color: rgb(from var(--accent-color) r g b / 0.15);
+  border-bottom-color: var(--accent-color);
+  color: #b45309; /* Dark Amber */
+}
+
+/* Accordion */
+.custom-accordion .accordion-item {
+  background: transparent;
+}
+.custom-accordion .accordion-button:not(.collapsed) {
+  background-color: transparent;
+  color: var(--primary-color);
+  box-shadow: inset 0 -1px 0 rgba(0,0,0,.125);
+}
+.custom-accordion .accordion-button:focus {
+  border-color: inherit;
+  box-shadow: none;
+}
+
+/* Modals */
+.modal-content {
+  border-radius: 1rem;
+}
