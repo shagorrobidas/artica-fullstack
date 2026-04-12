@@ -46,7 +46,7 @@ class ArticleAdmin(admin.ModelAdmin):
             'fields': ('title', 'subtitle', 'slug', 'author', 'status', 'is_featured')
         }),
         ('Hierarchy', {
-            'fields': ('category', 'subcategory', 'subsubcategory')
+            'fields': ('category', 'subcategory')
         }),
         ('Content', {
             'fields': ('cover_image', 'excerpt', 'body', 'tags')

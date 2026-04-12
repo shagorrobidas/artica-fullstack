@@ -4,19 +4,27 @@ from apps.categories.models import Category
 from apps.articles.models import Article
 from apps.glossary.models import InteractiveTerm
 from .serializers import (
-    CategorySerializer, 
-    ArticleListSerializer, 
+    CategorySerializer,
+    ArticleListSerializer,
     ArticleDetailSerializer,
     InteractiveTermSerializer
 )
 
+
 class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Category.objects.filter(is_active=True).prefetch_related('subcategories__subsubcategories')
+    queryset = Category.objects.filter(
+        is_active=True
+    ).prefetch_related('subcategories')
     serializer_class = CategorySerializer
     lookup_field = 'slug'
 
+
 class ArticleViewSet(viewsets.ReadOnlyModelViewSet):
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filter_backends = [
+        DjangoFilterBackend,
+        filters.SearchFilter,
+        filters.OrderingFilter
+    ]
     filterset_fields = ['category__slug', 'tags__slug']
     search_fields = ['title', 'body', 'excerpt']
     ordering_fields = ['published_at', 'view_count']
@@ -25,7 +33,15 @@ class ArticleViewSet(viewsets.ReadOnlyModelViewSet):
     def get_queryset(self):
         qs = Article.objects.filter(status='published')
         if self.action == 'retrieve':
-            qs = qs.prefetch_related('sections', 'media', 'term_mappings__term', 'tags').select_related('category', 'subcategory', 'subsubcategory')
+            qs = qs.prefetch_related(
+                'sections',
+                'media',
+                'term_mappings__term',
+                'tags'
+            ).select_related(
+                'category',
+                'subcategory'
+            )
         else:
             qs = qs.select_related('category').prefetch_related('tags')
         return qs
@@ -34,6 +50,7 @@ class ArticleViewSet(viewsets.ReadOnlyModelViewSet):
         if self.action == 'retrieve':
             return ArticleDetailSerializer
         return ArticleListSerializer
+
 
 class InteractiveTermViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = InteractiveTerm.objects.all()

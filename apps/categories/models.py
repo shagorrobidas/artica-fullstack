@@ -37,11 +37,4 @@ class SubCategory(BaseCategory):
     def __str__(self):
         return f"{self.category.name} > {self.name}"
 
-class SubSubCategory(BaseCategory):
-    subcategory = models.ForeignKey(SubCategory, on_delete=models.CASCADE, related_name='subsubcategories')
 
-    class Meta(BaseCategory.Meta):
-        verbose_name_plural = 'Sub-Sub Categories'
-
-    def __str__(self):
-        return f"{self.subcategory.category.name} > {self.subcategory.name} > {self.name}"

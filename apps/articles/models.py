@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.text import slugify
 from ckeditor.fields import RichTextField
-from apps.categories.models import Category, SubCategory, SubSubCategory
+from apps.categories.models import Category, SubCategory
 
 class Tag(models.Model):
     name = models.CharField(max_length=50, unique=True)
@@ -29,7 +29,7 @@ class Article(models.Model):
     # Hierarchy relation (only one needs to be set, typically the deepest one applicable)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True, related_name='articles')
     subcategory = models.ForeignKey(SubCategory, on_delete=models.SET_NULL, null=True, blank=True, related_name='articles')
-    subsubcategory = models.ForeignKey(SubSubCategory, on_delete=models.SET_NULL, null=True, blank=True, related_name='articles')
+
 
     cover_image = models.ImageField(upload_to='article_covers/')
     body = RichTextField()

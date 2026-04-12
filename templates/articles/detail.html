@@ -11,19 +11,11 @@
     <nav aria-label="breadcrumb" class="mb-4">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="/">Home</a></li>
-            {% if article.category %}
-            <li class="breadcrumb-item"><a href="{% url 'categories:category_list' slug=article.category.slug %}">{{
-                    article.category.name }}</a></li>
-            {% endif %}
             {% if article.subcategory %}
-            <li class="breadcrumb-item"><a
-                    href="{% url 'categories:subcategory_list' slug=article.category.slug sub_slug=article.subcategory.slug %}">{{
-                    article.subcategory.name }}</a></li>
-            {% endif %}
-            {% if article.subsubcategory %}
-            <li class="breadcrumb-item"><a
-                    href="{% url 'categories:subsubcategory_list' slug=article.category.slug sub_slug=article.subcategory.slug subsub_slug=article.subsubcategory.slug %}">{{
-                    article.subsubcategory.name }}</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'categories:category_list' slug=article.subcategory.category.slug %}">{{ article.subcategory.category.name }}</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'categories:subcategory_list' slug=article.subcategory.category.slug sub_slug=article.subcategory.slug %}">{{ article.subcategory.name }}</a></li>
+            {% elif article.category %}
+            <li class="breadcrumb-item"><a href="{% url 'categories:category_list' slug=article.category.slug %}">{{ article.category.name }}</a></li>
             {% endif %}
             <li class="breadcrumb-item active" aria-current="page">{{ article.title|truncatechars:30 }}</li>
         </ol>
@@ -53,20 +45,13 @@
 
     <div class="row g-5">
         <!-- Main Content -->
-        <div class="col-lg-8">
-            <div class="article-body fs-5 fw-light text-dark lh-lg rich-text-content">
-                <!-- Apply highlight_terms filter, assuming we pass terms from context -->
-                {{ article.body|highlight_terms:article.term_mappings.all|safe }}
-            </div>
 
-            <!-- Inline Media Buttons (can be placed at bottom or rendered in text via shortcodes if advanced, 
-                 but for simplicity we show them below the body or as attached resources) -->
-            {% if article.media.exists %}
+        {% if article.media.exists %}
             <div class="mt-5 p-4 bg-light rounded-4 border border-light">
-                <h4 class="fw-bold mb-4"><i class='bx bx-photo-album text-primary me-2'></i>Attached Media</h4>
-                <div class="d-flex flex-wrap gap-3 mt-3">
+                <h4 class="fw-bold mb-4"><i class='bx bx-photo-album text-primary me-2'></i>Multimedia Content</h4>
+                <div class="d-flex flex-column gap-4 mt-3">
                     {% for m in article.media.all %}
-                    <button class="btn btn-outline-primary d-flex align-items-center gap-2 media-btn"
+                    <div class="card border-0 shadow-sm overflow-hidden media-btn" style="cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'"
                         data-media-type="{{ m.media_type }}" data-media-title="{{ m.label }}"
                         {% if m.media_type == 'image' and m.image %} data-media-src="{{ m.image.url }}" {% endif %}
                         {% if m.media_type == 'video' and m.video_file %} data-media-src="{{ m.video_file.url }}" {% endif %}
@@ -75,18 +60,52 @@
                         {% if m.media_type == 'text' %} data-media-text="{{ m.text_content|escape }}" {% endif %}
                         data-bs-toggle="modal" data-bs-target="#mediaModal">
 
-                        {% if m.media_type == 'text' %}<i class='bx bx-text fs-4'></i>{% endif %}
-                        {% if m.media_type == 'image' %}<i class='bx bx-image fs-4'></i>{% endif %}
-                        {% if m.media_type == 'audio' %}<i class='bx bx-headphone fs-4'></i>{% endif %}
-                        {% if m.media_type == 'video' %}<i class='bx bx-video fs-4'></i>{% endif %}
-                        {% if m.media_type == 'youtube' %}<i class='bx bxl-youtube fs-4 text-danger'></i>{% endif %}
-
-                        {{ m.label }}
-                    </button>
+                        <div class="position-relative text-center bg-dark">
+                            {% if m.media_type == 'image' %}
+                            <img src="{{ m.image.url }}" class="w-100 object-fit-cover opacity-75" style="max-height: 300px;" alt="{{ m.label }}">
+                            <div class="position-absolute top-50 start-50 translate-middle">
+                                <div class="bg-white rounded-circle p-3 shadow-sm text-primary d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                                    <i class='bx bx-zoom-in fs-2'></i>
+                                </div>
+                            </div>
+                            {% elif m.media_type == 'youtube' %}
+                            <div class="d-flex align-items-center justify-content-center text-danger py-5" style="min-height: 200px; background: #f8f9fa;">
+                                <i class='bx bxl-youtube' style="font-size: 5rem;"></i>
+                            </div>
+                            {% elif m.media_type == 'video' %}
+                            <div class="d-flex align-items-center justify-content-center text-white py-5" style="min-height: 200px;">
+                                <i class='bx bx-play-circle' style="font-size: 5rem;"></i>
+                            </div>
+                            {% elif m.media_type == 'audio' %}
+                            <div class="d-flex align-items-center justify-content-center text-primary py-5" style="min-height: 150px; background: #e9ecef;">
+                                <i class='bx bx-headphone' style="font-size: 5rem;"></i>
+                            </div>
+                            {% elif m.media_type == 'text' %}
+                            <div class="p-4 bg-light text-dark text-start" style="min-height: 150px;">
+                                <i class='bx bx-text fs-1 mb-2 text-primary'></i>
+                                <p class="mb-0">{{ m.text_content|truncatewords:30 }}</p>
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="card-footer bg-white border-0 py-3 d-flex align-items-center justify-content-between">
+                            <h6 class="fw-bold mb-0 text-dark">{{ m.label }}</h6>
+                            <span class="badge bg-primary rounded-pill text-capitalize opacity-75">{{ m.media_type }}</span>
+                        </div>
+                    </div>
                     {% endfor %}
                 </div>
             </div>
             {% endif %}
+
+        <div class="col-lg-8">
+            <div class="article-body fs-5 fw-light text-dark lh-lg rich-text-content">
+                <!-- Apply highlight_terms filter, assuming we pass terms from context -->
+                {{ article.body|highlight_terms:article.term_mappings.all|safe }}
+            </div>
+
+            <!-- Inline Media Buttons (can be placed at bottom or rendered in text via shortcodes if advanced, 
+                 but for simplicity we show them below the body or as attached resources) -->
+            
 
             <!-- Tags -->
             {% if article.tags.exists %}

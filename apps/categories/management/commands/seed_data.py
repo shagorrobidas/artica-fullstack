@@ -2,14 +2,14 @@ import string
 import random
 from django.core.management.base import BaseCommand
 from django.utils import timezone
-from apps.categories.models import Category, SubCategory, SubSubCategory
+from apps.categories.models import Category, SubCategory
 from apps.articles.models import Article, Tag, ArticleSection
 from apps.media_manager.models import ArticleMedia
 from apps.glossary.models import InteractiveTerm, ArticleTermMapping
 from django.contrib.auth.models import User
 
 class Command(BaseCommand):
-    help = 'Seeds the database with sample data for EduPlatform'
+    help = 'Seeds the database with sample data for Interactive Teaching Platform'
 
     def handle(self, *args, **kwargs):
         self.stdout.write('Seeding database...')
@@ -27,8 +27,7 @@ class Command(BaseCommand):
         physics, _ = SubCategory.objects.get_or_create(name='Physics', category=science)
         ai, _ = SubCategory.objects.get_or_create(name='Artificial Intelligence', category=tech)
         
-        # SubSubCategories
-        quantum, _ = SubSubCategory.objects.get_or_create(name='Quantum Mechanics', subcategory=physics)
+
 
         # Tags
         tag1, _ = Tag.objects.get_or_create(name='Innovation')
@@ -58,8 +57,7 @@ class Command(BaseCommand):
             defaults={
                 'subtitle': 'A deep dive into paired particles',
                 'category': science,
-                'subcategory': physics,
-                'subsubcategory': quantum,
+        'subcategory': physics,
                 'excerpt': 'Learn about the spooky action at a distance that defines modern physics.',
                 'body': article_body_1,
                 'status': 'published',
