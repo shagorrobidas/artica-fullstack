@@ -56,7 +56,12 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+
 ROOT_URLCONF = 'config.urls'
+
+# Silence CKEditor 4 EOL Warning
+SILENCED_SYSTEM_CHECKS = ['ckeditor.W001']
+
 
 TEMPLATES = [
     {
