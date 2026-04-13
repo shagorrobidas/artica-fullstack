@@ -54,9 +54,12 @@ class ArticleDetailView(DetailView):
             term = mapping.term
             terms_data[term.slug] = {
                 'term': term.term,
+                'type': term.content_type,
                 'explanation': term.explanation,
                 'image': term.image.url if term.image else '',
                 'audio': term.audio_file.url if term.audio_file else '',
+                'video': term.video_file.url if term.video_file else '',
+                'youtube': term.youtube_url or '',
                 'link': term.external_link or ''
             }
         context['terms_json'] = terms_data
