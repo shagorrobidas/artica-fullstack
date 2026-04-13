@@ -1,20 +1,41 @@
 from .base import *
+import os
+from pathlib import Path
 
 # Override settings for production here
-DEBUG = env.bool('DEBUG', default=False)
+DEBUG = False
 
-# Ensure ALLOWED_HOSTS is properly set in .env for production
-ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['localhost', '127.0.0.1', '.onrender.com'])
+SECRET_KEY = os.getenv("SECRET_KEY", "change-me")
 
-# Render uses HTTPS by default, so we need to add the Render URL to CSRF_TRUSTED_ORIGINS
-RENDER_EXTERNAL_HOSTNAME = env('RENDER_EXTERNAL_HOSTNAME', default=None)
-if RENDER_EXTERNAL_HOSTNAME:
-    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
-    CSRF_TRUSTED_ORIGINS = [f'https://{RENDER_EXTERNAL_HOSTNAME}']
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "shagorrobidasjvai.pythonanywhere.com").split(",")
 
-# Security Settings
-SECURE_SSL_REDIRECT = env.bool('SECURE_SSL_REDIRECT', default=True)
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
-SECURE_BROWSER_XSS_FILTER = True
-SECURE_CONTENT_TYPE_NOSNIFF = True
+CSRF_TRUSTED_ORIGINS = [
+    f"https://{host.strip()}" for host in ALLOWED_HOSTS if host.strip()
+]
+
+# SQLite for PythonAnywhere free plan
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
+    }
+}
+
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
+
+# Ensure whitenoise is in MIDDLEWARE
+# Since it is already in base.py, we don't strictly need to redefine it here,
+# but we follow the requested structure and handle the slice carefully to avoid duplication.
+if 'whitenoise.middleware.WhiteNoiseMiddleware' not in MIDDLEWARE:
+    MIDDLEWARE = [
+        "django.middleware.security.SecurityMiddleware",
+        "whitenoise.middleware.WhiteNoiseMiddleware",
+        *[m for m in MIDDLEWARE if m != "django.middleware.security.SecurityMiddleware"]
+    ]
+
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
