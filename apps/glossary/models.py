@@ -4,11 +4,21 @@ from django.utils.text import slugify
 from apps.articles.models import Article
 
 class InteractiveTerm(models.Model):
+    CONTENT_TYPES = (
+        ('text', 'Text only (🔍)'),
+        ('image', 'Image + Text (🖼️)'),
+        ('audio', 'Audio + Text (🔊)'),
+        ('video', 'Video + Text (🎥)'),
+    )
+
     term = models.CharField(max_length=100, unique=True, help_text="The word/phrase to highlight")
     slug = models.SlugField(max_length=100, unique=True, blank=True)
-    explanation = RichTextField()
+    content_type = models.CharField(max_length=10, choices=CONTENT_TYPES, default='text')
+    explanation = RichTextField(blank=True, null=True)
     image = models.ImageField(upload_to='glossary/images/', blank=True, null=True)
     audio_file = models.FileField(upload_to='glossary/audio/', blank=True, null=True)
+    video_file = models.FileField(upload_to='glossary/video/', blank=True, null=True)
+    youtube_url = models.URLField(blank=True, null=True, help_text="YouTube URL")
     external_link = models.URLField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
