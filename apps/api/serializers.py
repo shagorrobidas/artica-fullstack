@@ -61,7 +61,6 @@ class ArticleMediaSerializer(serializers.ModelSerializer):
         model = ArticleMedia
         fields = [
             'id',
-            'media_type',
             'label',
             'text_content',
             'image',

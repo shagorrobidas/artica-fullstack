@@ -3,7 +3,6 @@ from .models import ArticleMedia
 
 @admin.register(ArticleMedia)
 class ArticleMediaAdmin(admin.ModelAdmin):
-    list_display = ('article', 'media_type', 'label', 'order')
-    list_filter = ('media_type',)
+    list_display = ('article', 'label', 'order')
     search_fields = ('label', 'article__title')
     list_editable = ('order',)

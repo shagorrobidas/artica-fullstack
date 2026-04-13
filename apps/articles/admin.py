@@ -3,23 +3,26 @@ from .models import Article, Tag, ArticleSection
 from apps.media_manager.models import ArticleMedia
 from apps.glossary.models import ArticleTermMapping
 
+
 class ArticleSectionInline(admin.StackedInline):
     model = ArticleSection
     extra = 1
+
 
 class ArticleMediaInline(admin.StackedInline):
     model = ArticleMedia
     extra = 1
     fieldsets = (
         (None, {
-            'fields': ('media_type', 'label', 'order')
+            'fields': ('label', 'order')
         }),
-        ('Content (Fill based on media_type)', {
+        ('Content Fields', {
             'fields': ('text_content', 'image', 'audio_file', 'video_file', 'youtube_url'),
             'classes': ('collapse',),
-            'description': ("Only fill the field that matches the chosen 'media_type'.")
+            'description': ("Fill the fields you want to include in this multimedia record.")
         }),
     )
+
 
 class ArticleTermMappingInline(admin.TabularInline):
     model = ArticleTermMapping

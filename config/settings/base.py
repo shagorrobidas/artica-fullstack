@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     
     # Third-party apps
     'ckeditor',
+    'ckeditor_uploader',
     'rest_framework',
     'django_filters',
     # 'django_extensions', # Optional, useful for dev
@@ -68,7 +69,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                # Custom context processors can be added here
+                'django.template.context_processors.static',
             ],
         },
     },
@@ -130,6 +131,7 @@ CKEDITOR_CONFIGS = {
             ['RemoveFormat', 'Source']
         ],
         'width': '100%',
+        'height': 300,
     }
 }
 
