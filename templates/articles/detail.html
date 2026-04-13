@@ -237,14 +237,14 @@
 
             {% if article.sections.exists %}
             <div class="position-sticky" style="top: 100px;">
-                <h4 class="fw-bold mb-4 border-bottom pb-2">Expandable Content</h4>
+                <h4 class="sidebar-heading">Expandable Content</h4>
 
-                <div class="accordion custom-accordion shadow-sm" id="articleSectionsAccordion">
+                <div class="accordion custom-accordion" id="articleSectionsAccordion">
                     {% for section in article.sections.all %}
-                    <div class="accordion-item border-0 border-bottom">
+                    <div class="accordion-item border-0">
                         <h2 class="accordion-header" id="heading{{ section.id }}">
                             <button
-                                class="accordion-button {% if not section.is_expanded_default %}collapsed{% endif %} bg-white text-dark fw-bold"
+                                class="accordion-button {% if not section.is_expanded_default %}collapsed{% endif %}"
                                 type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ section.id }}"
                                 aria-expanded="{{ section.is_expanded_default|yesno:'true,false' }}"
                                 aria-controls="collapse{{ section.id }}">
@@ -254,8 +254,8 @@
                         <div id="collapse{{ section.id }}"
                             class="accordion-collapse collapse {% if section.is_expanded_default %}show{% endif %}"
                             aria-labelledby="heading{{ section.id }}" data-bs-parent="#articleSectionsAccordion">
-                            <div class="accordion-body text-muted small p-4 bg-light bg-opacity-50">
-                                {{ section.content|safe }}
+                            <div class="accordion-body rich-text-content">
+                                {{ section.content|highlight_terms:article.term_mappings.all|safe }}
                             </div>
                         </div>
                     </div>
